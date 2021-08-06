@@ -1,0 +1,173 @@
+#sigmoid
+import numpy as np
+
+def sigmoid(x):
+    s = 1 / (1 + np.exp(-x))
+    return s
+
+# Tensorflow2.0版
+sigmoid_fc = tf.keras.activations.sigmoid(x)
+# pytorch版
+sigmoid_fc = torch.nn.Sigmoid()
+output = sigmoid_fc(x)
+
+
+#relu
+import numpy as np
+
+def relu(x):
+    s = np.where(x < 0, 0, x)
+    return s
+
+# Tensorflow2.0版
+relu_fc = tf.keras.activations.relu(x)
+# pytorch版
+relu_fc = torch.nn.Relu()
+output = relu_fc(x)
+
+
+
+#leaky relu
+
+import numpy as np
+
+def lrelu(x):
+    s = np.where(x >= 0, x, αx)
+    return s
+
+# Tensorflow2.0版
+lrelu_fc = tf.keras.activations.relu(x,alpha=0.01) # 需要指定alpha的大小 
+# pytorch版
+lrelu_fc = torch.nn.LeakyReLU(0.01)
+output = lrelu_fc(x)
+
+#elu
+
+import numpy as np
+
+def elu(x):
+    s = np.where(x >= 0, x, α(np.exp(x)-1)
+    return s
+
+# Tensorflow2.0版
+elu_fc = tf.keras.activations.elu(x,alpha=0.1) # 需要指定alpha的大小 
+# pytorch版
+elu_fc = torch.nn.ELU(0.1)
+output = elu_fc(x)
+
+#softmax
+def softmax(x):
+    x_exp = np.exp(x)
+    x_sum = np.sum(x_exp, axis=1, keepdims=True)
+    s = x_exp / x_sum
+    return s
+
+# Tensorflow2.0版
+softmax_fc = tf.keras.activations.softmax(x)
+# pytorch版
+softmax_fc = torch.nn.Softmax()
+output = softmax_fc(x)
+
+
+#Binary step
+def binaryStep(x):
+    ''' It returns '0' is the input is less then zero otherwise it returns one '''
+    return np.heaviside(x,1)
+x = np.linspace(-10, 10)
+plt.plot(x, binaryStep(x))
+plt.axis('tight')
+plt.title('Activation Function :binaryStep')
+plt.show()
+
+
+#Maxout
+
+import tensorflow as tf
+
+x = tf.random_normal([5,3])
+m = 4
+k = 3
+d = 3
+
+W = tf.Variable(tf.random_normal(shape=[d, m, k])) # 3*4*3
+b = tf.Variable(tf.random_normal(shape = [m, k])) # 4*3
+dot_z = tf.tensordot(x, W, axes=1) + b # 5 * 4 * 3
+print(dot_z)
+z = tf.reduce_max(dot_z, axis=2) # 5 * 4
+print(z)
+
+with tf.Session() as sess:
+    sess.run(tf.global_variables_initializer())
+    print(sess.run([x,dot_z,z]))
+    
+#mish
+import matplotlib.pyplot as plt
+%matplotlib inline
+
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
+from keras.engine.base_layer import Layer
+from keras.layers import Activation, Dense
+from keras import backend as K
+from sklearn.model_selection import train_test_split
+from keras.datasets import mnist
+from keras.optimizers import SGD
+from keras.utils import np_utils
+from __future__ import print_function
+import keras
+from keras.models import Sequential
+from keras.layers.core import Flatten
+from keras.layers import Dropout
+from keras.layers import Conv2D, MaxPooling2D
+from keras.layers.normalization import BatchNormalization
+import numpy as np
+
+class Mish(Layer):
+    '''
+    Mish Activation Function.
+    .. math::
+        mish(x) = x * tanh(softplus(x)) = x * tanh(ln(1 + e^{x}))
+    Shape:
+        - Input: Arbitrary. Use the keyword argument `input_shape`
+        (tuple of integers, does not include the samples axis)
+        when using this layer as the first layer in a model.
+        - Output: Same shape as the input.
+    Examples:
+        >>> X_input = Input(input_shape)
+        >>> X = Mish()(X_input)
+    '''
+
+    def __init__(self, **kwargs):
+        super(Mish, self).__init__(**kwargs)
+        self.supports_masking = True
+
+    def call(self, inputs):
+        return inputs * K.tanh(K.softplus(inputs))
+
+    def get_config(self):
+        base_config = super(Mish, self).get_config()
+        return dict(list(base_config.items()) + list(config.items()))
+
+    def compute_output_shape(self, input_shape):
+        return input_shape
+      
+      
+
+def mish(x):
+	return keras.layers.Lambda(lambda x: x*K.tanh(K.softplus(x)))(x)
+ 
+ ###### Use in your model ##########
+ 
+ model.add(Dense(128,activation= mish))
+ 
+ #作弊版
+ def tanh(x):
+    return (np.exp(x) - np.exp(-x))/(np.exp(x) + np.exp(-x))
+ 
+def softplus(x):
+    return np.log(1 + np.exp(x))
+ 
+def misc(x):
+    return x * tanh(softplus(x))
